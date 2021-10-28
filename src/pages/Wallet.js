@@ -10,7 +10,7 @@ class Wallet extends React.Component {
     const initialFormExpense = {
       value: 0,
       description: '',
-      currency: 'USD',
+      currency: 'CAD',
       method: 'Cartão de crédito',
       tag: 'Alimentação',
     };
@@ -49,6 +49,7 @@ class Wallet extends React.Component {
           name={ name }
           value={ value }
           onChange={ this.handleExpense }
+          data-testid={ `${name}-input` }
         >
           {options.map((option, index) => (
             <option key={ index }>{option}</option>
@@ -67,6 +68,7 @@ class Wallet extends React.Component {
           name={ name }
           type={ type }
           value={ value }
+          data-testid={ `${name}-input` }
           onChange={ this.handleExpense }
         />
       </label>
@@ -112,7 +114,7 @@ class Wallet extends React.Component {
 
   formToInserExpense() {
     const {
-      currentExpense: { value, description, currency, method, tag },
+      currentExpense: { value, description, currency, method, tag }, isEditing,
     } = this.state;
     const tagOptions = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
     const paymentOptions = ['dinheiro', 'Cartão de crédito', 'Cartão de débito'];
@@ -131,7 +133,9 @@ class Wallet extends React.Component {
           method,
         )}
         {generateSelect('Tag', 'tag', tagOptions, tag)}
-        <button type="submit" onClick={ this.saveExpense }>Adicionar despesa</button>
+        <button type="submit" onClick={ this.saveExpense }>
+          {isEditing ? 'Editar despesa' : 'Adicionar despesa'}
+        </button>
       </form>
     );
   }
@@ -164,11 +168,8 @@ class Wallet extends React.Component {
               <span data-testid="total-field">{ this.updateTotalExpenses() }</span>
             </div>
           </section>
-          {
-            isLoalding
-              ? <h1>Carregado</h1>
-              : <h1>Insira sua depesa</h1>
-          }
+          {isLoalding && <h1>Carregado</h1>}
+          {!isLoalding && <h1>Insira sua depesa</h1>}
           {this.formToInserExpense()}
         </header>
         <ExpensesTable loaldToEdition={ this.loaldToEdition } />
